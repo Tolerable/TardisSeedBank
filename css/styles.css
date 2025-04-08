@@ -105,7 +105,7 @@ body {
     position: absolute;
     width: 40px;
     height: 40px;
-    background-image: url('/img/galaxy.png');
+    background-image: url('img/galaxy.png');
     background-size: contain;
     background-repeat: no-repeat;
     opacity: 0.6;
@@ -231,7 +231,7 @@ nav a:hover::before {
 
 /* Strain Hero Section */
 .strain-hero {
-    background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('/img/tardis-portal-bg.jpg');
+    background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('img/tardis-portal-bg.jpg');
     background-size: cover;
     background-position: center;
     padding: 80px 0;
