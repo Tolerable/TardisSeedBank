@@ -27,6 +27,20 @@ body {
     position: relative;
 }
 
+.floating-tardis {
+  position: absolute;
+  pointer-events: none;
+  z-index: 5;
+}
+
+#tardisBox {
+  width: 40px;
+  height: auto;
+  transform-origin: center;
+  transition: all 0.7s ease-in-out;
+  filter: drop-shadow(0 0 5px var(--sonic-green));
+}
+
 /* Space background effects */
 .background {
     position: fixed;
