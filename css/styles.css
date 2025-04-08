@@ -29,16 +29,17 @@ body {
 
 .floating-tardis {
   position: absolute;
+  z-index: 0;
   pointer-events: none;
-  z-index: 5;
 }
 
 #tardisBox {
-  width: 40px;
-  height: auto;
-  transform-origin: center;
-  transition: all 0.7s ease-in-out;
-  filter: drop-shadow(0 0 5px var(--sonic-green));
+  z-index: 0;
+}
+
+.strain-hero h1, .strain-hero p {
+  position: relative;
+  z-index: 5;
 }
 
 /* Space background effects */
@@ -283,7 +284,6 @@ nav a:hover::before {
     color: white;
     text-shadow: 0 0 10px var(--sonic-green), 0 0 20px var(--sonic-green);
     position: relative;
-    z-index: 1;
 }
 
 .strain-hero p {
