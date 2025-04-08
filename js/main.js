@@ -730,76 +730,72 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize the page
     renderStrainCards();
 
-	// TARDIS box teleportation
+	// TARDIS box teleportation - fixed dimensions approach
 	function teleportTardis() {
 		const tardisBox = document.getElementById('tardisBox');
-		const strainHero = document.querySelector('.strain-hero');
 		
-		if (!tardisBox || !strainHero) return;
+		if (!tardisBox) return;
 		
-		// Get the dimensions of the hero box
-		const heroWidth = strainHero.clientWidth;
-		const heroHeight = strainHero.clientHeight;
+		// Your exact dimensions - hero box is 1200x340
+		const heroWidth = 1200;
+		const heroHeight = 340;
 		
-		// TARDIS dimensions (fixed)
+		// TARDIS dimensions
 		const tardisWidth = 40;
 		const tardisHeight = 60;
 		
-		// STRICT safe area calculation - keep everything fully visible
-		const safeX = heroWidth - tardisWidth - 20; // 20px safety margin
-		const safeY = heroHeight - tardisHeight - 20; // 20px safety margin
+		// Safe area calculation (keep TARDIS fully visible)
+		const safeMaxX = heroWidth - tardisWidth - 20;
+		const safeMaxY = heroHeight - tardisHeight - 20;
 		
-		// Generate position within hero box
-		const x = Math.min(Math.max(20, Math.floor(Math.random() * safeX)), safeX);
-		const y = Math.min(Math.max(20, Math.floor(Math.random() * safeY)), safeY);
+		// Generate random position
+		const x = Math.floor(Math.random() * safeMaxX) + 20;
+		const y = Math.floor(Math.random() * safeMaxY) + 20;
 		
-		// Behavior: 0 = landed on wall, 1 = floating
+		// Random behavior (0 = wall align, 1 = free float)
 		const behavior = Math.random() > 0.5 ? 0 : 1;
 		let rotation;
 		
 		if (behavior === 0) {
-			// Wall behavior - determine closest wall
-			const distToLeft = x;
-			const distToRight = heroWidth - x - tardisWidth;
-			const distToTop = y;
-			const distToBottom = heroHeight - y - tardisHeight;
+			// Wall align - choose a wall
+			const wall = Math.floor(Math.random() * 4);
 			
-			// Find the closest wall
-			const minDist = Math.min(distToLeft, distToRight, distToTop, distToBottom);
-			
-			if (minDist === distToLeft && x < 50) {
-				rotation = 90; // Left wall
-			} else if (minDist === distToRight && distToRight < 50) {
-				rotation = -90; // Right wall
-			} else if (minDist === distToTop && y < 50) {
-				rotation = 180; // Top wall
-			} else if (minDist === distToBottom && distToBottom < 50) {
-				rotation = 0; // Bottom wall
-			} else {
-				rotation = Math.random() * 360; // Not close enough to any wall, just randomize
+			switch(wall) {
+				case 0: // Bottom
+					rotation = 0;
+					break;
+				case 1: // Left
+					rotation = 90;
+					break;
+				case 2: // Top
+					rotation = 180;
+					break;
+				case 3: // Right
+					rotation = 270;
+					break;
 			}
+			
+			// Add slight tilt variation
+			rotation += Math.random() * 20 - 10;
 		} else {
-			// Floating behavior - random angle
+			// Free float - random angle
 			rotation = Math.random() * 360;
 		}
 		
-		// Add a small random tilt for more natural look
-		rotation += Math.random() * 20 - 10;
-		
-		// Apply position and rotation
+		// Set position directly
 		tardisBox.style.position = 'absolute';
 		tardisBox.style.left = `${x}px`;
 		tardisBox.style.top = `${y}px`;
 		tardisBox.style.transform = `rotate(${rotation}deg)`;
 		
-		// Fade in effect
+		// Teleport effect
 		tardisBox.style.opacity = '0';
 		setTimeout(() => {
 			tardisBox.style.opacity = '1';
 		}, 200);
 	}
 
-	// Initial positioning
+	// Initial teleport
 	teleportTardis();
 
 	// Teleport every 8 seconds
