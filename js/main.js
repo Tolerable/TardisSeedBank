@@ -737,84 +737,65 @@ document.addEventListener('DOMContentLoaded', function() {
 		
 		if (!tardisBox || !strainHero) return;
 		
-		// Get the dimensions of the container
-		const containerRect = strainHero.getBoundingClientRect();
+		// Get the dimensions of the hero box
+		const heroWidth = strainHero.clientWidth;
+		const heroHeight = strainHero.clientHeight;
 		
-		// Fixed size for TARDIS
-		const boxWidth = 40; // Width in pixels
-		const boxHeight = 60; // Approximate height based on your image ratio
+		// TARDIS dimensions (fixed)
+		const tardisWidth = 40;
+		const tardisHeight = 60;
 		
-		// Calculate safe area 
-		const padding = 10; // Smaller padding to allow it to "touch" walls
-		const maxX = containerRect.width - boxWidth - padding;
-		const maxY = containerRect.height - boxHeight - padding;
-		const minX = padding;
-		const minY = padding;
+		// STRICT safe area calculation - keep everything fully visible
+		const safeX = heroWidth - tardisWidth - 20; // 20px safety margin
+		const safeY = heroHeight - tardisHeight - 20; // 20px safety margin
 		
-		// Decide behavior: 0 = wall landing, 1 = drifting
-		const behavior = Math.random() > 0.4 ? 0 : 1; // 60% wall landing, 40% drifting
+		// Generate position within hero box
+		const x = Math.min(Math.max(20, Math.floor(Math.random() * safeX)), safeX);
+		const y = Math.min(Math.max(20, Math.floor(Math.random() * safeY)), safeY);
 		
-		let x, y, rotation, scale;
-		scale = 0.9 + Math.random() * 0.2; // Random scale between 0.9 and 1.1
+		// Behavior: 0 = landed on wall, 1 = floating
+		const behavior = Math.random() > 0.5 ? 0 : 1;
+		let rotation;
 		
 		if (behavior === 0) {
-			// WALL LANDING BEHAVIOR
-			// Choose which wall to land on: 0=left, 1=right, 2=top, 3=bottom
-			const wall = Math.floor(Math.random() * 4);
+			// Wall behavior - determine closest wall
+			const distToLeft = x;
+			const distToRight = heroWidth - x - tardisWidth;
+			const distToTop = y;
+			const distToBottom = heroHeight - y - tardisHeight;
 			
-			switch(wall) {
-				case 0: // Left wall
-					x = padding;
-					y = minY + Math.random() * (maxY - minY);
-					rotation = 90; // Rotated so bottom of TARDIS is against left wall
-					break;
-					
-				case 1: // Right wall
-					x = maxX;
-					y = minY + Math.random() * (maxY - minY);
-					rotation = -90; // Rotated so bottom of TARDIS is against right wall
-					break;
-					
-				case 2: // Top wall
-					x = minX + Math.random() * (maxX - minX);
-					y = padding;
-					rotation = 180; // Upside down, bottom against top wall
-					break;
-					
-				case 3: // Bottom wall
-					x = minX + Math.random() * (maxX - minX);
-					y = maxY;
-					rotation = 0; // Normal orientation, bottom against bottom wall
-					break;
+			// Find the closest wall
+			const minDist = Math.min(distToLeft, distToRight, distToTop, distToBottom);
+			
+			if (minDist === distToLeft && x < 50) {
+				rotation = 90; // Left wall
+			} else if (minDist === distToRight && distToRight < 50) {
+				rotation = -90; // Right wall
+			} else if (minDist === distToTop && y < 50) {
+				rotation = 180; // Top wall
+			} else if (minDist === distToBottom && distToBottom < 50) {
+				rotation = 0; // Bottom wall
+			} else {
+				rotation = Math.random() * 360; // Not close enough to any wall, just randomize
 			}
-			
-			// Add a small random tilt (-15 to +15 degrees) for natural variation
-			rotation += Math.random() * 30 - 15;
-			
 		} else {
-			// DRIFTING BEHAVIOR - random position with random tilt
-			x = minX + Math.random() * (maxX - minX);
-			y = minY + Math.random() * (maxY - minY);
-			rotation = Math.random() * 360; // Can be at any angle when drifting
+			// Floating behavior - random angle
+			rotation = Math.random() * 360;
 		}
 		
-		// Apply new position
+		// Add a small random tilt for more natural look
+		rotation += Math.random() * 20 - 10;
+		
+		// Apply position and rotation
 		tardisBox.style.position = 'absolute';
 		tardisBox.style.left = `${x}px`;
 		tardisBox.style.top = `${y}px`;
-		tardisBox.style.transform = `rotate(${rotation}deg) scale(${scale})`;
+		tardisBox.style.transform = `rotate(${rotation}deg)`;
 		
-		// Add a dematerialization/materialization effect
+		// Fade in effect
 		tardisBox.style.opacity = '0';
 		setTimeout(() => {
-			// Materialize with a slight glow
 			tardisBox.style.opacity = '1';
-			tardisBox.style.filter = 'drop-shadow(0 0 8px var(--sonic-green))';
-			
-			// Reduce glow after materialization
-			setTimeout(() => {
-				tardisBox.style.filter = 'drop-shadow(0 0 3px var(--sonic-green))';
-			}, 400);
 		}, 200);
 	}
 
