@@ -729,4 +729,75 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize the page
     renderStrainCards();
+
+	// TARDIS box teleportation
+	function teleportTardis() {
+		const tardisBox = document.getElementById('tardisBox');
+		const strainHero = document.querySelector('.strain-hero');
+		
+		if (!tardisBox || !strainHero) return;
+		
+		// Get the dimensions of the container
+		const containerRect = strainHero.getBoundingClientRect();
+		const boxWidth = tardisBox.offsetWidth;
+		const boxHeight = tardisBox.offsetHeight;
+		
+		// Calculate maximum positions (accounting for TARDIS size)
+		const maxX = containerRect.width - boxWidth;
+		const maxY = containerRect.height - boxHeight;
+		
+		// Decide on a random position style (0-4)
+		const positionStyle = Math.floor(Math.random() * 5);
+		
+		// Variables for position and rotation
+		let x, y, rotation;
+		
+		switch(positionStyle) {
+			case 0: // Random position
+				x = Math.random() * maxX;
+				y = Math.random() * maxY;
+				rotation = Math.random() * 360;
+				break;
+			case 1: // Bottom edge
+				x = Math.random() * maxX;
+				y = maxY - 10;
+				rotation = Math.random() * 60 - 30;
+				break;
+			case 2: // Left edge
+				x = 10;
+				y = Math.random() * maxY;
+				rotation = 90 + (Math.random() * 60 - 30);
+				break;
+			case 3: // Right edge
+				x = maxX - 10;
+				y = Math.random() * maxY;
+				rotation = -90 + (Math.random() * 60 - 30);
+				break;
+			case 4: // Top edge
+				x = Math.random() * maxX;
+				y = 10;
+				rotation = 180 + (Math.random() * 60 - 30);
+				break;
+		}
+		
+		// Apply new position and rotation with a bit of scaling for effect
+		const scale = 0.8 + Math.random() * 0.4; // Random scale between 0.8 and 1.2
+		tardisBox.style.position = 'absolute';
+		tardisBox.style.left = `${x}px`;
+		tardisBox.style.top = `${y}px`;
+		tardisBox.style.transform = `rotate(${rotation}deg) scale(${scale})`;
+		
+		// Add a brief fade effect
+		tardisBox.style.opacity = '0';
+		setTimeout(() => {
+			tardisBox.style.opacity = '1';
+		}, 200);
+	}
+
+	// Initial positioning
+	teleportTardis();
+
+	// Teleport every 10 seconds
+	setInterval(teleportTardis, 10000);	
+	
 });
