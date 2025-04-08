@@ -743,8 +743,10 @@ document.addEventListener('DOMContentLoaded', function() {
 		const boxHeight = tardisBox.offsetHeight;
 		
 		// Calculate maximum positions (accounting for TARDIS size)
-		const maxX = containerRect.width - boxWidth;
-		const maxY = containerRect.height - boxHeight;
+		// Restrict to the central 80% of the box to keep it more visible
+		const margin = 0.1; // 10% margin from each edge
+		const maxX = containerRect.width * (1 - 2 * margin);
+		const maxY = containerRect.height * (1 - 2 * margin);
 		
 		// Decide on a random position style (0-4)
 		const positionStyle = Math.floor(Math.random() * 5);
@@ -753,29 +755,29 @@ document.addEventListener('DOMContentLoaded', function() {
 		let x, y, rotation;
 		
 		switch(positionStyle) {
-			case 0: // Random position
-				x = Math.random() * maxX;
-				y = Math.random() * maxY;
+			case 0: // Random position in center area
+				x = (containerRect.width * margin) + (Math.random() * maxX);
+				y = (containerRect.height * margin) + (Math.random() * maxY);
 				rotation = Math.random() * 360;
 				break;
-			case 1: // Bottom edge
-				x = Math.random() * maxX;
-				y = maxY - 10;
+			case 1: // Bottom area
+				x = (containerRect.width * margin) + (Math.random() * maxX);
+				y = containerRect.height * (1 - margin) - 10;
 				rotation = Math.random() * 60 - 30;
 				break;
-			case 2: // Left edge
-				x = 10;
-				y = Math.random() * maxY;
+			case 2: // Left area
+				x = containerRect.width * margin + 10;
+				y = (containerRect.height * margin) + (Math.random() * maxY);
 				rotation = 90 + (Math.random() * 60 - 30);
 				break;
-			case 3: // Right edge
-				x = maxX - 10;
-				y = Math.random() * maxY;
+			case 3: // Right area
+				x = containerRect.width * (1 - margin) - 10;
+				y = (containerRect.height * margin) + (Math.random() * maxY);
 				rotation = -90 + (Math.random() * 60 - 30);
 				break;
-			case 4: // Top edge
-				x = Math.random() * maxX;
-				y = 10;
+			case 4: // Top area
+				x = (containerRect.width * margin) + (Math.random() * maxX);
+				y = containerRect.height * margin + 10;
 				rotation = 180 + (Math.random() * 60 - 30);
 				break;
 		}
@@ -797,7 +799,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	// Initial positioning
 	teleportTardis();
 
-	// Teleport every 10 seconds
-	setInterval(teleportTardis, 10000);	
+	// Teleport every 8 seconds (a bit more frequent)
+	setInterval(teleportTardis, 8000);
 	
 });
